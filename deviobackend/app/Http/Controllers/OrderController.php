@@ -12,7 +12,7 @@ class OrderController extends Controller
 {
     public function index()
     {
-        $orders = Order::with('orderItems', 'payments', 'kitchenOrder')->get();
+        $orders = Order::with('orderItems.product', 'payments', 'kitchenOrder')->get();
         return response()->json($orders, Response::HTTP_OK);
     }
 
@@ -65,7 +65,7 @@ class OrderController extends Controller
             // Passo 1: Excluir registros relacionados na tabela 'order_items'
             $order = Order::findOrFail($id);
             $orderItems = $order->orderItems;
-            
+
             foreach ($orderItems as $orderItem) {
                 $orderItem->delete();
             }
