@@ -23,10 +23,12 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name'     => 'required|string',
-            'code'     => 'required|string|unique:products',
-            'price'    => 'required|numeric',
-            'category' => 'required|string|in:Combos,acompanhamentos,Bebidas,sobremesas',
+            'name'       => 'required|string',
+            'code'       => 'required|string|unique:products',
+            'price'      => 'required|numeric',
+            'category'   => 'required|string|in:Combos,Acompanhamentos,Bebidas,Sobremesas',
+            'description'=> 'nullable|string',
+            'image'      => 'nullable|string',
         ]);
 
         $product = Product::create($request->all());
@@ -39,16 +41,19 @@ class ProductController extends Controller
         $product = Product::findOrFail($id);
 
         $validatedData = $request->validate([
-            'name'     => 'sometimes|string',
-            'code'     => 'sometimes|string|unique:products,code,' . $id,
-            'price'    => 'sometimes|numeric',
-            'category' => 'sometimes|string|in:Combos,acompanhamentos,Bebidas,sobremesas',
+            'name'        => 'sometimes|string',
+            'code'        => 'sometimes|string|unique:products,code,' . $id,
+            'price'       => 'sometimes|numeric',
+            'category'    => 'sometimes|string|in:Combos,acompanhamentos,Bebidas,sobremesas',
+            'description' => 'sometimes|string', 
+            'image'       => 'sometimes|url',     
         ]);
 
         $product->update($validatedData);
 
         return response()->json($product, Response::HTTP_OK);
     }
+
 
     public function destroy($id)
     {

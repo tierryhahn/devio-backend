@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Models\KitchenOrder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
@@ -58,9 +59,27 @@ class OrderController extends Controller
 
     public function destroy($id)
     {
-        $order = Order::findOrFail($id);
-        $order->delete();
+        try {
+            DB::beginTransaction();
 
-        return response()->json(null, Response::HTTP_NO_CONTENT);
+            // Passo 1: Excluir registros relacionados na tabela 'order_items'
+            $order = Order::findOrFail($id);
+            $orderItems = $order->orderItems;
+            
+            foreach ($orderItems as $orderItem) {
+                $orderItem->delete();
+            }
+
+            // Passo 2: Excluir a ordem
+            $order->delete();
+
+            DB::commit();
+
+            return response()->json(null, Response::HTTP_NO_CONTENT);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            // Lida com a exceção, pode registrar, retornar uma resposta personalizada, etc.
+            return response()->json(['error' => 'Erro ao excluir a ordem.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }
