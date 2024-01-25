@@ -32,10 +32,8 @@ class OrderController extends Controller
         'code'          => 'nullable|string',
     ]);
 
-    // Cria uma nova Order
     $order = Order::create($request->all());
 
-    // Cria uma KitchenOrder associada à Order
     $kitchenOrder = new KitchenOrder();
     $order->kitchenOrder()->save($kitchenOrder);
 
@@ -63,15 +61,12 @@ class OrderController extends Controller
         try {
             DB::beginTransaction();
 
-            // Passo 1: Excluir registros relacionados na tabela 'order_items'
             $order = Order::findOrFail($id);
             $orderItems = $order->orderItems;
 
             foreach ($orderItems as $orderItem) {
                 $orderItem->delete();
             }
-
-            // Passo 2: Excluir a ordem
             $order->delete();
 
             DB::commit();
@@ -79,7 +74,6 @@ class OrderController extends Controller
             return response()->json(null, Response::HTTP_NO_CONTENT);
         } catch (\Exception $e) {
             DB::rollBack();
-            // Lida com a exceção, pode registrar, retornar uma resposta personalizada, etc.
             return response()->json(['error' => 'Erro ao excluir a ordem.'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
