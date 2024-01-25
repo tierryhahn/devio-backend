@@ -7,8 +7,8 @@ Certifique-se de ter o ambiente PHP instalado em sua máquina.
 1. **Clone este repositório:**
 
    ```bash
-   git clone https://linkdoclone/backend.git
-   cd backend
+   git clone https://github.com/tierryhahn/devio-backend.git
+   cd devio-backend
    
 2. **Instale as dependências do Laravel:**
     ```bash
