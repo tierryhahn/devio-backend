@@ -29,6 +29,7 @@ class OrderController extends Controller
         'total'         => 'required|numeric',
         'change'        => 'required|numeric',
         'observation'   => 'nullable|string',
+        'code'          => 'nullable|string',
     ]);
 
     // Cria uma nova Order
